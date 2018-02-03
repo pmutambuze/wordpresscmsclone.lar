@@ -31,6 +31,10 @@ class Post extends Model
 	  return $this->hasMany(Comment::class);
 	}
 
+  public function getRouteKeyName() {
+    return 'slug';
+  }
+
   public function scopeLatestFirst($query) {
   	return $query->orderBy('created_at', 'desc');
   }
@@ -106,5 +110,10 @@ class Post extends Model
   	return is_null($this->published_at) ? '' : $this->published_at->diffForHumans();
   }
 
+  public function commentsNumber($label = 'Comment')
+	{
+		$commentsNumber = $this->comments->count();
+		return $commentsNumber . " " . str_plural($label, $commentsNumber);
+	}
 
 }
