@@ -117,6 +117,23 @@ class Post extends Model
   	return is_null($this->published_at) ? '' : $this->published_at->diffForHumans();
   }
 
+  public function getTagsHtmlAttribute() {
+		$anchors = [];
+		foreach ($this->tags as $tag) {
+			$anchors[] = '<a href="'.route('tag',$tag->slug).'">'.$tag->name.'</a>';
+		}
+		return implode(", ", $anchors);
+	}
+
+	public function setPublishedAtAttribute($value) {
+		$this->attributes['published_at'] = $value ? $value : NULL;
+	}
+
+	public function getTagsListAttribute()
+	{
+		return $this->tags->pluck('name');
+	}
+
   public function commentsNumber($label = 'Comment')
 	{
 		$commentsNumber = $this->comments->count();

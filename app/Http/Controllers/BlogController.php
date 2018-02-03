@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Post;
 use App\Category;
+use App\User;
+use App\Tag;
 
 class BlogController extends Controller
 {
@@ -12,21 +14,15 @@ class BlogController extends Controller
 
   public function index()
   {
-    $categories = Category::with(['posts' => function($query) {
-      $query->published();
-    }])->orderBy('title', 'asc')->get();
     $posts = Post::with('author', 'tags', 'category', 'comments')
   								->latestFirst()
   								->published()
   								->filter(request()->only(['term', 'year', 'month']))
   								->simplePaginate($this->limit);
-    return view("blog.index", compact('posts', 'categories'));
+    return view("blog.index", compact('posts'));
   }
 
   public function category(Category $category) {
-    $categories = Category::with(['posts' => function($query) {
-      $query->published();
-    }])->orderBy('title', 'asc')->get();
     $categoryName = $category->title;
 
     $posts = $category->posts()
@@ -34,7 +30,7 @@ class BlogController extends Controller
                       ->latestFirst()
                       ->published()
                       ->simplePaginate($this->limit);
-    return view("blog.index", compact("posts", "categoryName", "categories"));
+    return view("blog.index", compact("posts", "categoryName"));
   }
 
   public function show(Post $post) {
@@ -47,5 +43,28 @@ class BlogController extends Controller
 
 		return view("blog.show", compact('post', 'postComments'));
 	}
+
+  public function tag(Tag $tag) {
+    $tagName = $tag->title;
+
+    $posts = $tag->posts()
+                  ->with('author', 'tags', 'comments')
+                  ->latestFirst()
+                  ->published()
+                  ->simplePaginate($this->limit);
+    return view("blog.index", compact("posts", "tagName"));
+  }
+
+  public function author(User $author) {
+    $authorName = $author->name;
+
+    $posts = $author->posts()
+                    ->with('author', 'tags', 'comments')
+                    ->latestFirst()
+                    ->published()
+                    ->simplePaginate($this->limit);
+    return view("blog.index", compact("posts", "authorName"));
+  }
+
 
 }

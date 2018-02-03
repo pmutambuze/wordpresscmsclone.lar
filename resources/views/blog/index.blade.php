@@ -4,6 +4,15 @@
   <div class="container">
       <div class="row">
         <div class="col-md-8">
+
+          @if(! $posts->count())
+            <div class="alert alert-info">
+              <p>Nothing Found</p>
+            </div>
+          @else
+
+            @include('blog.partials.alert')
+
             @foreach ($posts as $post)
               <article class="post-item">
                   @if ($post->image_url)
@@ -25,8 +34,10 @@
                               <ul class="post-meta-group">
                                   <li><i class="fa fa-user"></i><a href="#"> {{ $post->author->name }}</a></li>
                                   <li><i class="fa fa-clock-o"></i><time> {{ $post->date }}</time></li>
-                                  <li><i class="fa fa-tags"></i><a href="#"> Blog</a></li>
-                                  <li><i class="fa fa-comments"></i><a href="#">4 Comments</a></li>
+                                  <li><i class="fa fa-tag"></i>{!! $post->tags_html !!}</li>
+                                  <li><i class="fa fa-comments"></i>
+                                    <a href="{{ route('blog.show', $post->slug) }}#post-comments"> {{ $post->commentsNumber('Comment') }}</a>
+                                  </li>
                               </ul>
                           </div>
                           <div class="pull-right">
@@ -36,10 +47,11 @@
                   </div>
               </article>
             @endforeach
+          @endif
 
-            <nav>
-              {{ $posts->links() }}
-            </nav>
+          <nav>
+            {{ $posts->links() }}
+          </nav>
         </div>
         @include('blog.partials.sidebar')
       </div>
