@@ -140,4 +140,14 @@ class Post extends Model
 		return $commentsNumber . " " . str_plural($label, $commentsNumber);
 	}
 
+  public static function archives()
+	{
+			return static::selectRaw('count(id) as post_count, year(published_at) year, monthname(published_at) month')
+											->published()
+											->groupBy('year', 'month')
+											->orderByRaw('min(published_at) desc')
+											->get();
+	}
+
+
 }

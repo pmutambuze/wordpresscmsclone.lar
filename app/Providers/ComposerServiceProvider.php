@@ -3,32 +3,29 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Views\Composers\NavigationComposer;
 use App\Category;
+use App\Post;
 
 class ComposerServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap the application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-      view()->composer('blog.partials.sidebar', function($view){
-        $categories = Category::with(['posts' => function($query) {
-          $query->published();
-        }])->orderBy('title', 'asc')->get();
-        return $view->with('categories', $categories);
-      });
-    }
+  /**
+   * Bootstrap the application services.
+   *
+   * @return void
+   */
+  public function boot()
+  {
+    view()->composer('blog.partials.sidebar', NavigationComposer::class);
+  }
 
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
+  /**
+   * Register the application services.
+   *
+   * @return void
+   */
+  public function register()
+  {
+    //
+  }
 }
