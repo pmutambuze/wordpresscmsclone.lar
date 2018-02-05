@@ -45,7 +45,7 @@ class BlogController extends Controller
 	}
 
   public function tag(Tag $tag) {
-    $tagName = $tag->title;
+    $tagName = $tag->name;
 
     $posts = $tag->posts()
                   ->with('author', 'tags', 'comments')
