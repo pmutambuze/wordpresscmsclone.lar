@@ -149,5 +149,9 @@ class Post extends Model
 											->get();
 	}
 
+  public function createComment(array $data)
+	{
+		$this->comments()->create($data);
+	}
 
 }
