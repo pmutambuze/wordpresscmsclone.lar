@@ -16,6 +16,15 @@
 	</div>
 @endif
 
+@if (request('month'))
+	<?php
+		$archiveName = request('month').' '.request('year');
+	?>
+	<div class="alert alert-info">
+		<p>Archives for: <strong>{{ $archiveName }}</strong></p>
+	</div>
+@endif
+
 @if ($term = request('term'))
 	<div class="alert alert-info">
 		<p>Search Results for: <strong>{{ $term }}</strong></p>
