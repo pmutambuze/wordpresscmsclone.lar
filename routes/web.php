@@ -35,3 +35,9 @@ Route::post('/blog/{post}/comments', [
   'uses' => 'CommentsController@store',
   'as' => 'blog.comments'
 ]);
+
+Auth::routes();
+
+Route::post('/logout','Auth\LogoutController@logout');
+
+Route::get('/home', 'Backend\HomeController@index')->name('home');
