@@ -28,18 +28,15 @@
 					</span>
 				</a>
 				<ul class="treeview-menu">
-					<li><a href="#"><i class="fa fa-circle-o"></i> All Posts</a></li>
-					<li><a href="#"><i class="fa fa-circle-o"></i> Add New</a></li>
+					<li><a href="{{ route('backend.blog.index') }}"><i class="fa fa-circle-o"></i> All Posts</a></li>
+					<li><a href="{{ route('backend.blog.create') }}"><i class="fa fa-circle-o"></i> Add New</a></li>
 				</ul>
 			</li>
-			@#if (check_user_permissions(request(), "Categories@index"))
 				<li>
 					<a href="#">
 						<i class="fa fa-folder"></i> <span>Categories</span>
 					</a>
 				</li>
-			@#endif
-			@#if (check_user_permissions(request(), "Users@index"))
 				<li class="treeview">
 				<a href="#">
 					<i class="fa fa-pencil"></i>
@@ -65,7 +62,6 @@
 				</ul>
 
 			</li>
-			@#endif
 		</ul>
 	</section>
 	<!-- /.sidebar -->

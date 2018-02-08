@@ -41,3 +41,9 @@ Auth::routes();
 Route::post('/logout','Auth\LogoutController@logout');
 
 Route::get('/home', 'Backend\HomeController@index')->name('home');
+
+Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => 'auth'], function () {
+    Route::resource('blog', 'Backend\BlogController');
+//		Route::resource('categories', 'Backend\CategoriesController');
+//		Route::resource('users', 'Backend\UsersController');
+});
