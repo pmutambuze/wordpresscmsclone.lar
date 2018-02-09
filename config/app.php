@@ -140,6 +140,7 @@ return [
 
       Barryvdh\Debugbar\ServiceProvider::class,
       Collective\Html\HtmlServiceProvider::class,
+      Intervention\Image\ImageServiceProvider::class,
         /*
          * Laravel Framework Service Providers...
          */
@@ -197,7 +198,8 @@ return [
       'Debugbar' => Barryvdh\Debugbar\Facade::class,
       'Form' => Collective\Html\FormFacade::class,
       'Html' => Collective\Html\HtmlFacade::class,
-      
+      'Image' => Intervention\Image\Facades\Image::class,
+
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
