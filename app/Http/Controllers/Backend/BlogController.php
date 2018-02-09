@@ -4,10 +4,18 @@ namespace App\Http\Controllers\Backend;
 
 use Illuminate\Http\Request;
 use App\Post;
+use App\Http\Requests\PostRequest;
 
 class BlogController extends BackendController
 {
   protected $limit = 5;
+  protected $uploadPath;
+
+  public function __construct()
+  {
+    parent::__construct();
+    $this->uploadPath = public_path('img');
+  }
   /**
    * Display a listing of the resource.
    *
@@ -26,9 +34,9 @@ class BlogController extends BackendController
    *
    * @return \Illuminate\Http\Response
    */
-  public function create()
+  public function create(Post $post)
   {
-      //
+    return view('backend.blog.create', compact('post'));
   }
 
   /**
@@ -37,9 +45,29 @@ class BlogController extends BackendController
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(PostRequest $request)
   {
-      //
+    $data = $this->handleRequest($request);
+    $request->user()->posts()->create($data);
+
+    return redirect('/backend/blog')->with('message', 'Your post was created successfully!');
+  }
+
+  public function handleRequest($request)
+  {
+    $data = $request->all();
+
+    if ($request->hasFile('image')) {
+      $image = $request->file('image');
+      $fileName = $image->getClientOriginalName();
+      $destination = $this->uploadPath;
+
+      $image->move($destination, $fileName);
+
+      $data['image'] = $fileName;
+    }
+
+    return $data;
   }
 
   /**
