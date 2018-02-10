@@ -170,4 +170,19 @@ class Post extends Model
 		}
 	}
 
+  public function createTags($tagString)
+	{
+		$tags = explode(",", $tagString);
+		$tagIds = [];
+		foreach ($tags as $tag)
+		{
+			$newTag = Tag::firstOrCreate(['slug' => str_slug($tag)], ['name' =>
+			trim($tag)]);
+			$tagIds[] = $newTag->id;
+		}
+		$this->tags()->detach();
+		$this->tags()->attach($tagIds);
+		$this->tags()->sync($tagIds);
+	}
+
 }

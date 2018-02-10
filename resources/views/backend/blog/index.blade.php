@@ -57,10 +57,10 @@
                   @foreach ($posts as $post)
                     <tr>
                       <td>
-                        <a href="{{ route('backend.blog.edit', $post->slug) }}" class="btn btn-xs btn-default">
+                        <a href="{{ route('backend.blog.edit', $post->id) }}" class="btn btn-xs btn-default">
                           <i class="fa fa-edit"></i>
                         </a>
-                        <a href="{{ route('backend.blog.destroy', $post->slug )}}" class="btn btn-xs btn-danger">
+                        <a href="{{ route('backend.blog.destroy', $post->id )}}" class="btn btn-xs btn-danger">
                           <i class="fa fa-times"></i>
                         </a>
                       </td>

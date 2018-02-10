@@ -100,7 +100,8 @@ class BlogController extends BackendController
    */
   public function edit($id)
   {
-      //
+    $post = Post::findOrFail($id);
+    return view('backend.blog.edit', compact('post'));
   }
 
   /**
@@ -110,9 +111,29 @@ class BlogController extends BackendController
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(PostRequest $request, $id)
   {
-      //
+    $post = Post::findOrFail($id);
+    $oldImage = $post->image;
+    $data = $this->handleRequest($request);
+    $post->update($data);
+//    $post->createTags($data['post_tags']);
+
+    if ($oldImage !== $post->image) {
+      $this->removeImage($oldImage);
+    }
+    return redirect(route('backend.blog.index'))->with('message', 'Your post was updated successfully!');
+  }
+
+  public function removeImage($image) {
+    if (!empty($image)) {
+      $imagePath = $this->uploadPath . '/' . $image;
+      $ext = substr(strrchr($image, '.'),1);
+      $thumbnail = str_replace(".{$ext}", "_thumb.{$ext}", $image);
+      $thumbnailPath = $this->uploadPath . '/' . $thumbnail;
+      if ( file_exists($imagePath) ) unlink($imagePath);
+      if ( file_exists($thumbnailPath) ) unlink($thumbnailPath);
+    }
   }
 
   /**
