@@ -22,12 +22,30 @@ class BlogController extends BackendController
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
-    $posts = Post::with('category', 'author')->latest()->paginate($this->limit);
-    $postCount = Post::count();
+    $onlyTrashed = FALSE;
+    if (($status = $request->get('status')) && $status == 'trash') {
+      $posts = Post::onlyTrashed()->with('category', 'author')->latest()->paginate($this->limit);
+      $postCount = Post::onlyTrashed()->count();
+      $onlyTrashed = TRUE;
+    } elseif ($status == 'published') {
+      $posts = Post::published()->with('category', 'author')->latest()->paginate($this->limit);
+      $postCount = Post::published()->count();
+    } elseif ($status == 'scheduled') {
+      $posts = Post::scheduled()->with('category', 'author')->latest()->paginate($this->limit);
+      $postCount = Post::scheduled()->count();
+    } elseif ($status == 'draft') {
+      $posts = Post::draft()->with('category', 'author')->latest()->paginate($this->limit);
+      $postCount = Post::draft()->count();
+    } else {
+      $posts = Post::with('category', 'author')->latest()->paginate($this->limit);
+      $postCount = Post::count();
+    }
 
-    return view('backend.blog.index', compact('posts', 'postCount'));
+    $statusList = $this->statusList($request);
+
+    return view('backend.blog.index', compact('posts', 'postCount', 'onlyTrashed', 'statusList'));
   }
 
   /**
@@ -89,7 +107,6 @@ class BlogController extends BackendController
    */
   public function show($id)
   {
-      //
   }
 
   /**
@@ -144,6 +161,37 @@ class BlogController extends BackendController
    */
   public function destroy($id)
   {
-      //
+    Post::findOrFail($id)->delete();
+    return redirect('/backend/blog')->with('trash-message', ['Your post moved to Trash!', $id]);
   }
+
+  public function forceDestroy($id)
+  {
+    $post = Post::withTrashed()->findOrFail($id);
+    $post->forcedelete();
+
+    $this->removeImage($post->image);
+
+    return redirect('/backend/blog?status=trash')->with('message', 'Your post has been deleted successfully!');
+  }
+
+  public function restore($id) {
+    $post = Post::withTrashed()->findOrFail($id);
+    $post->restore();
+
+    return redirect()->back()->with('message', 'You post has been moved from the Trash!');
+  }
+
+  private function statusList($request) {
+    return [
+      'all' => Post::count(),
+      'own' => $request->user()->posts()->count(),
+      'published' => Post::published()->count(),
+      'scheduled' => Post::scheduled()->count(),
+      'draft' => Post::draft()->count(),
+      'trash' => Post::onlyTrashed()->count(),
+    ];
+  }
+
+
 }

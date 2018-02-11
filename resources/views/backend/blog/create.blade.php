@@ -40,4 +40,4 @@
 
 @endsection
 
-@include('backend.blog.partial.scripts')
+@include('backend.blog.partials.scripts')
